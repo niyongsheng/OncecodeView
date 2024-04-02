@@ -15,8 +15,10 @@ OncecodeView
 - [x] [pwd style]()
 
 ## Screenshot
-<img src="./Images/20240402180125.jpg" width="260" height="160">
-<img src="./Images/20240402180350.jpg" width="260" height="160">
+<img src="./Images/20240402180125.jpg" width="260" height="160"> | <img src="./Images/20240402180350.jpg" width="260" height="160"> 
+--- | --- 
+
+
 
 ## Usage
 ```ruby
