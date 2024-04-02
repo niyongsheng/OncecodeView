@@ -1,5 +1,6 @@
 
-![(logo)](./logo.png)
+<img src="./logo.png" width="100">
+
 OncecodeView
 ===
 [![](https://img.shields.io/badge/platform-iOS-orange.svg)](https://developer.apple.com/ios/)
@@ -9,15 +10,13 @@ OncecodeView
 ## Introduction:
 > 验证码输入框页面组件。
 
-## Screenshot
-<img src="./Images/20240402180350.jpg" width="260" height="160">
-
-<img src="./Images/20240402180125.jpg" width="260" height="160">
-
-
 ## Features
-- [x] [sms]()
-- [x] [pwd]()
+- [x] [sms style]()
+- [x] [pwd style]()
+
+## Screenshot
+<img src="./Images/20240402180125.jpg" width="260" height="160">
+<img src="./Images/20240402180350.jpg" width="260" height="160">
 
 ## Usage
 ```ruby
