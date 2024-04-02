@@ -1,9 +1,9 @@
 //
 //  OncecodeView.swift
-//  OncecodeView
 //
+//  MIT License
+//  Copyright © 2024 Nico
 //  Created by Nico http://github.com/niyongsheng/OncecodeView
-//  Copyright © 2024 Nico. ALL rights reserved.
 //
 
 import UIKit
