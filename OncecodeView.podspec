@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                = "OncecodeView"
-  s.version             = "0.0.1"
+  s.version             = "1.0.0"
   s.platform            = :ios, "9.0"
   s.swift_version       = "4.0", "4.2", "5.0"
   s.summary             = "oncecode input view."
