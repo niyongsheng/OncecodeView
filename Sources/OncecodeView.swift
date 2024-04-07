@@ -9,17 +9,28 @@
 
 import UIKit
 
-protocol OncecodeTextFieldDelegate: AnyObject {
-    func didDeleteBackward()
+@objc protocol OncecodeTextFieldDelegate: AnyObject {
+    @objc func didDeleteBackward()
+    @objc func didBecomeFirstResponder(textField: OncecodeTextField)
 }
 
+@objc(OncecodeTextField)
 class OncecodeTextField: UITextField {
-    weak var deleteDelegate: OncecodeTextFieldDelegate?
+    
+    @objc weak var oncecodeTextFieldDelegate: OncecodeTextFieldDelegate?
     
     override func deleteBackward() {
         super.deleteBackward()
-        deleteDelegate?.didDeleteBackward()
+        oncecodeTextFieldDelegate?.didDeleteBackward()
     }
+    
+    override func becomeFirstResponder() -> Bool {
+            let success = super.becomeFirstResponder()
+            if success {
+                oncecodeTextFieldDelegate?.didBecomeFirstResponder(textField: self)
+            }
+            return success
+        }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -36,15 +47,19 @@ class OncecodeTextField: UITextField {
         }
         textField.text = String(text.prefix(1))
     }
+    
 }
 
-protocol OncecodeViewDelegate: AnyObject {
-    func oncecodeDidFinishInput(onceCodeView: OncecodeView, code: String)
+@objc protocol OncecodeViewDelegate: AnyObject {
+    @objc func oncecodeDidFinishInput(onceCodeView: OncecodeView, code: String)
+    @objc optional func oncecodeBecomeFirstResponder(onceCodeView: OncecodeView, textField: UITextField, index: Int)
 }
 
+@objc(OncecodeView)
 class OncecodeView: UIView {
-    weak var delegate: OncecodeViewDelegate?
-    var textfieldArray = [OncecodeTextField]()
+    
+    @objc weak var delegate: OncecodeViewDelegate?
+    @objc var textfieldArray = [OncecodeTextField]()
     
     private var numOfBox = 6
     private var isSecure: Bool = false
@@ -52,32 +67,37 @@ class OncecodeView: UIView {
     private var boxWidth: CGFloat = 50
     private var boxHeight: CGFloat = 50
     
-    var borderStyle: UITextField.BorderStyle = .none {
+    @objc var borderStyle: UITextField.BorderStyle = .none {
         didSet {
             updateUI()
         }
     }
-    var radius: CGFloat = 0 {
+    
+    @objc var radius: CGFloat = 0 {
         didSet {
             updateUI()
         }
     }
-    var themeColor: UIColor! = UIColor.systemBlue {
+    
+    @objc var themeColor: UIColor! = UIColor.systemBlue {
         didSet {
             updateUI()
         }
     }
-    var bgColor: UIColor! = UIColor.systemGray4 {
+    
+    @objc var bgColor: UIColor! = UIColor.systemGray4 {
         didSet {
             updateUI()
         }
     }
-    var textColor: UIColor = UIColor.black {
+    
+    @objc var textColor: UIColor = UIColor.black {
         didSet {
             updateUI()
         }
     }
-    var font: UIFont = UIFont.systemFont(ofSize: 30) {
+    
+    @objc var font: UIFont = UIFont.systemFont(ofSize: 30) {
         didSet {
             updateUI()
         }
@@ -123,7 +143,7 @@ class OncecodeView: UIView {
         }
         
         if numOfBox > 0 {
-            textfieldArray.first?.becomeFirstResponder()
+            _ = textfieldArray.first?.becomeFirstResponder()
         }
     }
     
@@ -142,20 +162,22 @@ class OncecodeView: UIView {
         codeTextField.textContentType = .oneTimeCode
         codeTextField.keyboardType = .numberPad
         codeTextField.delegate = self
-        codeTextField.deleteDelegate = self
+        codeTextField.oncecodeTextFieldDelegate = self
         addSubview(codeTextField)
         return codeTextField
     }
     
-    func cleanVerificationCodeView() {
+    @objc func cleanVerificationCodeView() {
         for textField in textfieldArray {
             textField.text = ""
         }
-        textfieldArray.first?.becomeFirstResponder()
+        _ = textfieldArray.first?.becomeFirstResponder()
     }
+    
 }
 
 extension OncecodeView: UITextFieldDelegate, OncecodeTextFieldDelegate {
+    
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         if !textField.hasText {
             let index = textField.tag
@@ -171,7 +193,7 @@ extension OncecodeView: UITextFieldDelegate, OncecodeTextFieldDelegate {
             }
             
             textField.text = string
-            textfieldArray[index + 1].becomeFirstResponder()
+            _ = textfieldArray[index + 1].becomeFirstResponder()
         }
         
         return true
@@ -185,8 +207,15 @@ extension OncecodeView: UITextFieldDelegate, OncecodeTextFieldDelegate {
             }
             
             let previousTextField = textfieldArray[i - 1]
-            previousTextField.becomeFirstResponder()
+            _ = previousTextField.becomeFirstResponder()
             previousTextField.text = ""
         }
     }
+    
+    func didBecomeFirstResponder(textField: OncecodeTextField) {
+        if let index = self.textfieldArray.firstIndex(where: { $0 === textField}) {
+            delegate?.oncecodeBecomeFirstResponder?(onceCodeView: self, textField: textField, index: index)
+        }
+    }
+    
 }

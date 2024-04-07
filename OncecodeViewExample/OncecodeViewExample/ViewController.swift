@@ -39,14 +39,25 @@ class ViewController: UIViewController, OncecodeViewDelegate {
         view.addSubview(pwdCodeView)
     }
     
+    // MARK: - OncecodeViewDelegate
     func oncecodeDidFinishInput(onceCodeView: OncecodeView, code: String) {
-        print("code: \(code)")
+        print("once code: \(code)")
+    }
+    
+    func oncecodeBecomeFirstResponder(onceCodeView: OncecodeView, textField: UITextField, index: Int) {
+        if onceCodeView.isEqual(pwdCodeView) {
+            for (i, value) in onceCodeView.textfieldArray.enumerated() {
+                value.layer.borderWidth = i == index ? 1.5 : 0
+                value.layer.cornerRadius = onceCodeView.radius
+                value.layer.borderColor = onceCodeView.themeColor.cgColor
+            }
+        }
     }
 }
 
 
 extension ViewController {
-    
+    // MARK: - 状态栏高度
     func statusBarHeight() -> CGFloat {
         var statusBarHeight: CGFloat = 0
         if #available(iOS 13.0, *) {
